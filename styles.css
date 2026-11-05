@@ -1,0 +1,880 @@
+:root {
+  --night: #1a1109;
+  --earth: #1d150c;
+  --sand: #b59972;
+  --clay: #a54d25;
+  --bone: #edece8;
+  --hair: rgba(237, 236, 232, .32);
+
+  --display-font: "Libertinus Sans", Optima, "Gill Sans", sans-serif;
+  --text-font: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  /* The type scale, 100 / 30 / 18 / 16 at 1440 wide */
+  --type-display: clamp(3.25rem, 6.95vw, 6.25rem);
+  --type-lead: clamp(1.25rem, 2.08vw, 1.875rem);
+  --type-small: 1.125rem;
+  --type-label: 1rem;
+
+  --gutter: clamp(1.25rem, 10vw, 9rem);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: var(--clay) var(--night);
+  -webkit-text-size-adjust: 100%;
+}
+
+html.is-loading { overflow: hidden; }
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--bone);
+  font: 400 var(--type-small)/1.15 var(--text-font);
+  letter-spacing: -.04em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, ol { margin: 0; padding: 0; font: inherit; }
+ul, ol { list-style: none; }
+iframe { display: block; border: 0; }
+
+::selection { background: var(--clay); color: var(--bone); }
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .18em;
+}
+
+:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+
+.sprite { position: absolute; }
+
+.skip {
+  position: fixed;
+  z-index: 60;
+  top: .75rem;
+  left: .75rem;
+  padding: .75rem 1rem;
+  background: var(--bone);
+  color: var(--night);
+  transform: translateY(-300%);
+}
+.skip:focus { transform: none; }
+
+.icon {
+  width: .8em;
+  height: .8em;
+  flex: none;
+}
+
+/* Shared type */
+
+.display {
+  font: 400 var(--type-display)/1 var(--display-font);
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+}
+
+.lead {
+  font: 400 var(--type-lead)/1.133 var(--text-font);
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+}
+
+.label {
+  font: 400 var(--type-label)/1.25 var(--display-font);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.hairline {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--hair);
+  transform-origin: left center;
+  animation: extend 1.6s var(--ease) both;
+}
+
+/* Preloader */
+
+.preloader {
+  display: none;
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  background: var(--night);
+  transition: opacity .8s ease;
+}
+
+.is-loading .preloader,
+.is-leaving .preloader { display: block; }
+
+.is-leaving .preloader {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preloader__text {
+  position: absolute;
+  bottom: calc(50% + 1rem);
+  left: 50%;
+  display: flex;
+  gap: 1.25rem;
+  font: 400 1.375rem/1.2 var(--display-font);
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.preloader__word {
+  min-width: 4.5em;
+  transition: opacity .35s ease, filter .35s ease;
+}
+
+.preloader__word.is-changing {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+.preloader__line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--hair);
+  transform-origin: left center;
+  animation: extend 2s var(--ease) both;
+}
+
+/* Fixed corners and menu. Their colour follows the section underneath. */
+
+.corner,
+.menu-toggle {
+  position: fixed;
+  z-index: 40;
+  color: var(--bone);
+  transition: color .4s ease;
+}
+
+.on-light .corner,
+.on-light .menu-toggle { color: var(--night); }
+
+.corner {
+  bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: var(--type-small);
+  line-height: 1.11;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.corner--left { left: 1.25rem; }
+.corner--right { right: 1.25rem; }
+
+.menu-toggle {
+  top: 1.25rem;
+  right: 1.25rem;
+  display: grid;
+  align-content: center;
+  gap: .4rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 0 0 .4rem;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 1px;
+  background: currentColor;
+  transition: transform .4s var(--ease), opacity .25s ease;
+}
+
+.menu-open .menu-toggle { color: var(--bone); }
+.menu-open .menu-toggle span:nth-child(1) { transform: translateY(calc(.4rem + 1px)) rotate(45deg); }
+.menu-open .menu-toggle span:nth-child(2) { opacity: 0; }
+.menu-open .menu-toggle span:nth-child(3) { transform: translateY(calc(-.4rem - 1px)) rotate(-45deg); }
+
+.menu {
+  position: fixed;
+  z-index: 35;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--night);
+}
+
+.menu[hidden] { display: none; }
+
+.menu a {
+  display: block;
+  padding-block: .25rem;
+  font: 400 var(--type-display)/1 var(--display-font);
+  letter-spacing: -.06em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* Hero */
+
+.smoke {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  height: 100vh;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: linear-gradient(100deg, #1a1109 20%, #6e2d12 62%, #bf4714);
+}
+
+.hero__venn {
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+  padding: clamp(.5rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem);
+}
+
+.venn {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.venn__ring {
+  fill: none;
+  stroke: rgba(237, 236, 232, .62);
+  stroke-width: 1.25;
+  stroke-dasharray: 1;
+  animation: draw 2s .2s var(--ease) both;
+}
+
+.venn__ring:nth-of-type(2) { animation-delay: .4s; }
+.venn__ring:nth-of-type(3) { animation-delay: .6s; }
+
+.venn__plus {
+  color: var(--bone);
+  animation: appear 1s 1s ease-out both;
+}
+
+.venn text {
+  fill: var(--bone);
+  text-anchor: middle;
+  text-transform: uppercase;
+  animation: appear 1s 1s ease-out both;
+}
+
+.venn__label {
+  font: 400 32px/1.1 var(--text-font);
+  letter-spacing: -.04em;
+}
+
+/* About: one screen, and each point lights up in turn as you scroll */
+
+.story {
+  position: relative;
+  background: var(--earth);
+  color: var(--sand);
+}
+
+.story__pin {
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(3.5rem, 8vh, 5rem) var(--gutter);
+}
+
+.story__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.story__title { color: var(--clay); }
+
+.story__summary {
+  max-width: 24em;
+  margin-top: 1.25rem;
+  font-size: var(--type-small);
+  line-height: 1.25;
+}
+
+.point {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(0, 4fr);
+  gap: 1rem clamp(1rem, 2.5vw, 2rem);
+  align-items: baseline;
+  padding-block: clamp(1rem, 3vh, 1.75rem);
+  border-top: 1px solid var(--hair);
+}
+
+.point:last-child { border-bottom: 1px solid var(--hair); }
+
+.point__mark {
+  color: var(--clay);
+  font: 400 clamp(1.75rem, 3vw, 2.75rem)/1 var(--display-font);
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.point a { color: var(--bone); }
+
+/* Pinned: the section holds still while the highlight moves down the list */
+.is-pinned .story__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+.is-pinned .point > * {
+  opacity: .32;
+  transition: opacity .5s var(--ease), color .5s var(--ease);
+}
+
+.is-pinned .point.is-active > * { opacity: 1; }
+.is-pinned .point.is-active .lead { color: var(--bone); }
+
+/* The sheet tilts in and levels out */
+
+.sheet-wrap {
+  position: relative;
+  margin-top: -1px; /* closes the hairline seam against the section above */
+  overflow-x: clip; /* top edge stays free, so the tilt isn't cut flat */
+  background: linear-gradient(var(--bone) 50%, var(--clay) 50%); /* matches each neighbour behind the tilt */
+}
+
+.sheet {
+  position: relative;
+  width: 120%; /* wider than the screen, so the tilt never exposes a side edge */
+  margin-left: -10%;
+  height: 45vh;
+  background: var(--clay);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Runs on behind Projects, so the tilted lower edge never shows */
+.sheet::after {
+  content: "";
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 0;
+  right: 0;
+  height: 20vh;
+  background: var(--clay);
+}
+
+/* Projects: one screen. Each project lights up in turn and its window appears beside it. */
+
+.projects {
+  position: relative;
+  z-index: 1;
+  background: var(--clay);
+  color: var(--bone);
+}
+
+.projects__pin {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(2.5rem, 8vh, 5rem) var(--gutter);
+}
+
+.items { margin-top: clamp(1rem, 3vh, 2rem); }
+
+.item {
+  padding-block: clamp(.75rem, 2vh, 1.25rem);
+  border-top: 1px solid var(--hair);
+}
+
+.item:last-child { border-bottom: 1px solid var(--hair); }
+
+.item__name {
+  font: 400 clamp(1.75rem, min(3.4vw, 5vh), 3rem)/1.05 var(--display-font);
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+}
+
+.item__detail { display: grid; }
+
+.item__detail > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.item__note {
+  max-width: 30em;
+  margin-top: .5rem;
+  font-size: var(--type-small);
+  line-height: 1.25;
+}
+
+.project__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.75rem;
+  font-size: var(--type-small);
+  text-transform: uppercase;
+}
+
+.stage {
+  container-type: inline-size;
+  display: grid;
+  gap: 2rem;
+  min-width: 0;
+}
+
+.is-pinned .projects__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+.is-pinned .stage {
+  container-type: size;
+  align-self: stretch;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  gap: 0;
+}
+
+.is-pinned .item__name {
+  opacity: .42;
+  transition: opacity .5s var(--ease);
+}
+
+.is-pinned .item.is-active .item__name { opacity: 1; }
+
+.is-pinned .item__detail {
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows .55s var(--ease), visibility .55s;
+}
+
+.is-pinned .item.is-active .item__detail {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+.is-pinned .stage .frame {
+  grid-area: 1 / 1;
+  align-self: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s var(--ease), visibility .5s;
+}
+
+.is-pinned .stage .frame.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sizes are read at their final values while the page checks what fits */
+.is-measuring,
+.is-measuring * { transition: none !important; }
+
+/* Windows measure the space they are given, so they can never run off screen. */
+
+.frame { min-width: 0; }
+
+/* Narrower windows sit in the middle of their column */
+.stage .frame iframe {
+  display: block;
+  margin-inline: auto;
+}
+
+.frame--fill iframe {
+  width: 100%;
+  height: min(100cqh, 28rem);
+}
+
+.stage .frame--video iframe {
+  width: min(100cqw, calc(100cqh * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+
+/* Instagram's window is a fixed header plus two rows of three square posts. */
+.frame--instagram iframe {
+  --w: min(100cqw, 30rem, calc((100cqh - 160px) * 1.5));
+  width: var(--w);
+  height: calc(160px + var(--w) * .667);
+  background: var(--bone);
+}
+
+/* A single Instagram post: a fixed header and footer around the picture. */
+.frame--post iframe {
+  --ratio: 1;
+  --w: min(100cqw, 26rem, calc((100cqh - 208px) / var(--ratio)));
+  width: var(--w);
+  height: calc(208px + var(--w) * var(--ratio));
+  background: var(--bone);
+}
+
+.frame--post-tall iframe { --ratio: 1.25; }
+
+/* The mix credit's video sizes itself from its own column */
+.mixing .frame--video { container-type: inline-size; }
+
+.mixing .frame--video iframe {
+  width: min(100cqw, calc(85vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+
+/* Mix credit: the one light section */
+
+.mixing {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(4rem, 9vw, 8rem) var(--gutter);
+  background: var(--bone);
+  color: var(--earth);
+}
+
+.mixing__rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(110vw, 110vh);
+  fill: none;
+  stroke: rgba(29, 21, 12, .1);
+  stroke-width: .6;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.mixing__eyebrow,
+.mixing__title,
+.mixing__grid { position: relative; }
+
+.mixing__eyebrow { color: var(--clay); text-align: center; }
+
+.mixing__title {
+  margin-top: .75rem;
+  color: var(--clay);
+  text-align: center;
+}
+
+.mixing__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.mixing__meta {
+  margin-top: 1rem;
+  font-size: var(--type-small);
+  line-height: 1.25;
+}
+
+/* Contact */
+
+.contact {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: linear-gradient(100deg, #8f3a17, #bf4714);
+  text-align: center;
+}
+
+.contact__center,
+.contact__foot { position: relative; z-index: 1; }
+
+.contact__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem var(--gutter) 2rem;
+}
+
+.contact__services {
+  margin-top: 1.25rem;
+  font: 400 1.375rem/1.18 var(--display-font);
+  letter-spacing: -.05em;
+  text-transform: uppercase;
+}
+
+.contact__ask {
+  max-width: 34em;
+  margin-top: .75rem;
+  font-size: var(--type-small);
+  line-height: 1.25;
+}
+
+.contact__button {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-top: 2rem;
+  border-radius: 50%;
+  background: var(--bone);
+  color: var(--clay);
+}
+
+.contact__button svg { width: 1.5rem; height: 1.5rem; }
+
+.contact__email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: .75rem;
+  font: 400 clamp(1.5rem, 2.2vw, 1.875rem)/1.06 var(--display-font);
+  letter-spacing: -.05em;
+}
+
+.contact__foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: .75rem 2rem;
+  align-items: center;
+  padding: 1rem var(--gutter) 4.5rem;
+}
+
+.contact__copyright {
+  grid-column: 2;
+  font: 400 var(--type-label)/1.25 var(--text-font);
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+}
+
+.contact__links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+
+.contact__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.wordmark {
+  position: absolute;
+  z-index: 3;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+  font-family: var(--display-font);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.wordmark__name {
+  font-family: var(--text-font);
+  font-size: 1.25rem;
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+
+.wordmark__name span {
+  display: block;
+  color: var(--sand);
+}
+
+.wordmark__label {
+  padding-left: 1rem;
+  border-left: 1px solid var(--hair);
+  color: var(--sand);
+  font-size: var(--type-label);
+  line-height: 1.8;
+  letter-spacing: 0;
+}
+
+/* Cursor: a ring with a small level meter that peaks as you move. Added only for mouse users. */
+
+.has-cursor,
+.has-cursor a,
+.has-cursor button { cursor: none; }
+
+.cursor {
+  position: fixed;
+  z-index: 90;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  color: var(--bone);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, color .25s ease;
+}
+
+.cursor.is-visible { opacity: 1; }
+.cursor.is-on-light { color: var(--night); }
+
+.cursor__ring {
+  position: absolute;
+  top: -1.125rem;
+  left: -1.125rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transition: scale .35s var(--ease), background-color .25s ease;
+}
+
+.cursor.is-on-link .cursor__ring {
+  scale: 1.7;
+  background-color: rgba(237, 236, 232, .14);
+}
+
+.cursor.is-on-light.is-on-link .cursor__ring { background-color: rgba(26, 17, 9, .1); }
+.cursor.is-pressed .cursor__ring { scale: .8; }
+
+.cursor__meter {
+  position: absolute;
+  top: -.5rem;
+  left: -.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 1rem;
+  height: 1rem;
+}
+
+.cursor__meter i {
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: currentColor;
+  transform: scaleY(.18);
+}
+
+/* Motion */
+
+@keyframes draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes appear {
+  from { opacity: 0; filter: blur(6px); }
+  to { opacity: 1; filter: none; }
+}
+
+@keyframes extend {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Small screens */
+
+@media (max-width: 760px) {
+  /* Phones have no spare margin, so the corners stay on the first screen. */
+  .corner {
+    position: absolute;
+    top: calc(100svh - 3.5rem);
+    bottom: auto;
+  }
+
+  .corner--left { left: 1.25rem; }
+  .corner--right { right: 1.25rem; }
+
+  .venn__label { font-size: 36px; }
+
+  .story__pin { padding: 4.5rem var(--gutter) 2rem; }
+
+  .story__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .story__summary {
+    margin-top: .5rem;
+    font-size: 1rem;
+  }
+
+  .point {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: .75rem;
+    padding-block: .875rem;
+  }
+
+  .point__mark { font-size: 1.5rem; }
+
+  .point .lead {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .sheet { height: 35vh; }
+
+  .mixing__grid { grid-template-columns: minmax(0, 1fr); }
+
+  .projects__pin {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    padding: 4.5rem var(--gutter) 1.25rem;
+  }
+
+  .is-pinned .stage .frame { align-self: start; }
+
+  .item__note { font-size: 1rem; }
+
+  .contact__foot {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding-bottom: 3.5rem;
+  }
+
+  .contact__copyright { grid-column: auto; }
+
+  .contact__links { justify-content: center; }
+}

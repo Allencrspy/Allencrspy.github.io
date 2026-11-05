@@ -57,6 +57,13 @@ a {
 
 .sprite { position: absolute; }
 
+/* Film grain and haze on large lettering and drawn lines. Small text stays clean. */
+.venn,
+.mixing__rings,
+.display,
+.item__name,
+.point__mark { filter: url(#film); }
+
 .skip {
   position: fixed;
   z-index: 60;

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;700&family=Libertinus+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=39">
+  <link rel="stylesheet" href="styles.css?v=44">
 </head>
 <body>
   <a class="skip" href="#about">Skip to content</a>
@@ -24,6 +24,26 @@
     <symbol id="plus" viewBox="0 0 24 24">
       <path d="M12 2v20M2 12h20" fill="none" stroke="currentColor" stroke-width="1"/>
     </symbol>
+    <!-- Film look: letters and lines stay solid, over a soft glow with fine grain in it -->
+    <filter id="film" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+      <feComponentTransfer in="blur" result="haze">
+        <feFuncA type="linear" slope=".55"/>
+      </feComponentTransfer>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="nearBlur"/>
+      <feComponentTransfer in="nearBlur" result="aura">
+        <feFuncA type="linear" slope=".45"/>
+      </feComponentTransfer>
+      <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="7" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  3 0 0 0 -1.4" result="speckle"/>
+      <feComposite in="aura" in2="speckle" operator="in" result="dust"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation=".35" result="soft"/>
+      <feMerge>
+        <feMergeNode in="haze"/>
+        <feMergeNode in="dust"/>
+        <feMergeNode in="soft"/>
+      </feMerge>
+    </filter>
   </svg>
 
   <div class="preloader" aria-hidden="true">
@@ -217,6 +237,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=39"></script>
+  <script src="script.js?v=44"></script>
 </body>
 </html>

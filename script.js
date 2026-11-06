@@ -45,6 +45,7 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function music() {
   const audio = document.getElementById('bgm');
   const toggle = document.querySelector('.sound-toggle');
+  const hint = document.querySelector('.sound-hint');
   const level = .6;
   let fade;
 
@@ -59,6 +60,7 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
 
   const disarm = () => {
+    hint.hidden = true;
     document.removeEventListener('click', first);
     document.removeEventListener('keydown', first);
   };

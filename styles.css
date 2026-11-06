@@ -225,6 +225,34 @@ a {
   transition: transform .4s var(--ease), opacity .25s ease;
 }
 
+/* Until the music starts: a prompt at the foot of the first screen */
+.sound-hint {
+  position: absolute;
+  z-index: 3;
+  bottom: 1.25rem;
+  left: 50%;
+  min-height: 2.75rem;
+  padding: 0 .5rem;
+  border: 0;
+  background: none;
+  color: rgba(237, 236, 232, .6);
+  font-size: .8125rem;
+  line-height: 1.11;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: appear 1s 1.2s ease-out both;
+}
+
+.sound-hint[hidden] { display: none; }
+.sound-hint__tap { display: none; }
+
+@media (hover: none) {
+  .sound-hint__click { display: none; }
+  .sound-hint__tap { display: inline; }
+}
+
 /* Sound: four level bars, flat when off and moving when the music plays */
 .sound-toggle {
   top: 1.25rem;
@@ -892,6 +920,9 @@ a {
   .corner--right { right: 1.25rem; }
 
   .venn__label { font-size: 36px; }
+
+  /* No room between the corner links here, so it takes its own line above them */
+  .sound-hint { bottom: 3.75rem; }
 
   .story { --lead-size: 1rem; }
 

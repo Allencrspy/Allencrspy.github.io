@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;700&family=Libertinus+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=44">
+  <link rel="stylesheet" href="styles.css?v=46">
 </head>
 <body>
   <a class="skip" href="#about">Skip to content</a>
@@ -54,6 +54,10 @@
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
+  <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Background music">
+    <span></span><span></span><span></span><span></span>
+  </button>
+  <audio id="bgm" src="bgm.mp3" loop preload="none"></audio>
   <nav class="menu" id="menu" aria-label="Main" hidden>
     <ul>
       <li><a href="#about">About</a></li>
@@ -229,7 +233,7 @@
       <a class="contact__email" href="mailto:allenbvt@gmail.com">allenbvt@gmail.com</a>
     </div>
     <div class="contact__foot">
-      <p class="contact__copyright">Allen Binu Thomas &copy; 2026</p>
+      <p class="contact__copyright">Allen Binu Thomas &copy; 2026<br>Background music by me</p>
       <ul class="contact__links">
         <li><a href="https://soundcloud.com/allen-thomas-33">SoundCloud</a></li>
         <li><a href="https://www.youtube.com/@63rdBalcony">YouTube</a></li>
@@ -237,6 +241,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=44"></script>
+  <script src="script.js?v=46"></script>
 </body>
 </html>

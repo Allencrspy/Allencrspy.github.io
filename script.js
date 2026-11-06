@@ -41,6 +41,58 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
 })();
 
+/* Background music. Browsers only allow sound after a click, tap or key press, so it starts on the first one. */
+(function music() {
+  const audio = document.getElementById('bgm');
+  const toggle = document.querySelector('.sound-toggle');
+  const level = .6;
+  let fade;
+
+  const play = () => {
+    clearInterval(fade);
+    audio.volume = 0;
+    fade = setInterval(() => {
+      audio.volume = Math.min(level, audio.volume + level / 24);
+      if (audio.volume >= level) clearInterval(fade);
+    }, 50);
+    return audio.play();
+  };
+
+  const disarm = () => {
+    document.removeEventListener('click', first);
+    document.removeEventListener('keydown', first);
+  };
+
+  function first(event) {
+    if (event.target.closest?.('.sound-toggle')) return;
+    // Some keys, such as Tab, don't count as permission. Stay ready for the next one.
+    play().then(disarm).catch(() => {});
+  }
+
+  document.addEventListener('click', first);
+  document.addEventListener('keydown', first);
+
+  toggle.addEventListener('click', () => {
+    disarm();
+    if (audio.paused) play().catch(() => {});
+    else audio.pause();
+  });
+
+  const show = () => {
+    toggle.classList.toggle('is-playing', !audio.paused);
+    toggle.setAttribute('aria-pressed', String(!audio.paused));
+  };
+  audio.addEventListener('play', show);
+  audio.addEventListener('pause', show);
+
+  // Clicking into a video or SoundCloud player hands the sound over to it.
+  addEventListener('blur', () => {
+    if (document.activeElement?.tagName !== 'IFRAME') return;
+    disarm();
+    audio.pause();
+  });
+})();
+
 /* Scroll-linked moments: About and Projects hold still while a highlight moves down their lists */
 (function scrollMotion() {
   const sheet = document.querySelector('[data-sheet]');

@@ -204,8 +204,13 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* Smoke: domain-warped noise drawn on the graphics card, only while on screen */
 (function smoke() {
   const vertex = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  // Phones treat mediump as 16-bit, which turns the noise below into a flat, frozen gradient.
   const fragment = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    #else
     precision mediump float;
+    #endif
     uniform vec2 res; uniform float time; uniform float warm;
     float hash(vec2 p){return fract(sin(dot(p,vec2(41.3,289.1)))*43758.5453);}
     float noise(vec2 p){
